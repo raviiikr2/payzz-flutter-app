@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -11,34 +12,50 @@ class AddMoneyScreen extends StatefulWidget {
 
 class _AddMoneyScreenState extends State<AddMoneyScreen> {
   final amountController = TextEditingController();
-  final noteController = TextEditingController();
+  late Razorpay _razorpay;
 
-  String selectedSource = "UPI";
-  bool isLoading = false;
+  @override
+  void initState() {
+    super.initState();
+    _razorpay = Razorpay();
 
-  final List<String> sources = ["UPI", "Bank Transfer", "Debit Card"];
+    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, handlePaymentSuccess);
+    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, handlePaymentError);
+    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, handleExternalWallet);
+  }
 
-  Future<void> addMoney() async {
+  @override
+  void dispose() {
+    _razorpay.clear();
+    super.dispose();
+  }
+
+  void openCheckout(double amount) {
+    var options = {
+      'key': 'rzp_test_SH6kWulpHBxkrq', // 🔴 Replace this
+      'amount': (amount * 100).toInt(), // paise
+      'name': 'Payzz Wallet',
+      'description': 'Add Money',
+      'prefill': {
+        'contact': '9999999999',
+        'email': FirebaseAuth.instance.currentUser?.email ?? ''
+      }
+    };
+
+    _razorpay.open(options);
+  }
+
+  void handlePaymentSuccess(PaymentSuccessResponse response) async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
 
-    final amount = double.tryParse(amountController.text.trim());
-
-    if (amount == null || amount <= 0) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Enter valid amount")),
-      );
-      return;
-    }
-
-    setState(() => isLoading = true);
+    double amount = double.parse(amountController.text);
 
     final userRef =
         FirebaseFirestore.instance.collection('users').doc(user.uid);
 
     await FirebaseFirestore.instance.runTransaction((transaction) async {
       final snapshot = await transaction.get(userRef);
-
       double currentBalance = 0;
 
       if (snapshot.exists) {
@@ -56,125 +73,51 @@ class _AddMoneyScreenState extends State<AddMoneyScreen> {
       transaction.set(transactionRef, {
         'type': 'credit',
         'amount': amount,
-        'source': selectedSource,
-        'note': noteController.text.trim(),
+        'source': 'Razorpay',
         'date': FieldValue.serverTimestamp(),
+        'paymentId': response.paymentId,
       });
     });
 
-    setState(() => isLoading = false);
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Payment Successful")),
+    );
+
     Navigator.pop(context);
   }
+
+  void handlePaymentError(PaymentFailureResponse response) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Payment Failed")),
+    );
+  }
+
+  void handleExternalWallet(ExternalWalletResponse response) {}
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF121212),
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-        title: const Text(
-          "Add Money",
-          style: TextStyle(color: Colors.white),
-        ),
-        iconTheme: const IconThemeData(color: Colors.white),
-      ),
+      appBar: AppBar(title: const Text("Add Money")),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
-
-            /// Amount Field
             TextField(
               controller: amountController,
               keyboardType: TextInputType.number,
-              style: const TextStyle(color: Colors.white),
-              decoration: InputDecoration(
-                labelText: "Enter Amount",
-                labelStyle: const TextStyle(color: Colors.white70),
-                filled: true,
-                fillColor: Colors.white10,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
+              decoration: const InputDecoration(labelText: "Enter Amount"),
             ),
-
-            const SizedBox(height: 20),
-
-            /// Source Dropdown
-            DropdownButtonFormField<String>(
-              value: selectedSource,
-              dropdownColor: const Color(0xFF1E1E1E),
-              style: const TextStyle(color: Colors.white),
-              items: sources
-                  .map((source) => DropdownMenuItem(
-                        value: source,
-                        child: Text(source),
-                      ))
-                  .toList(),
-              onChanged: (value) {
-                setState(() {
-                  selectedSource = value!;
-                });
-              },
-              decoration: InputDecoration(
-                labelText: "Select Source",
-                labelStyle: const TextStyle(color: Colors.white70),
-                filled: true,
-                fillColor: Colors.white10,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 20),
-
-            /// Note Field
-            TextField(
-              controller: noteController,
-              style: const TextStyle(color: Colors.white),
-              decoration: InputDecoration(
-                labelText: "Note (Optional)",
-                labelStyle: const TextStyle(color: Colors.white70),
-                filled: true,
-                fillColor: Colors.white10,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-            ),
-
             const SizedBox(height: 30),
-
-            /// Add Money Button
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.deepPurple,
-                  padding: const EdgeInsets.symmetric(vertical: 15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                onPressed: isLoading ? null : addMoney,
-                child: isLoading
-                    ? const SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2,
-                        ),
-                      )
-                    : const Text(
-                        "Add Money",
-                        style: TextStyle(fontSize: 16,
-                        color: Colors.white),
-                      ),
-              ),
-            )
+            ElevatedButton(
+              onPressed: () {
+                double? amount =
+                    double.tryParse(amountController.text.trim());
+                if (amount != null && amount > 0) {
+                  openCheckout(amount);
+                }
+              },
+              child: const Text("Pay with Razorpay"),
+            ),
           ],
         ),
       ),

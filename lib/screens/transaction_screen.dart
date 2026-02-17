@@ -13,7 +13,10 @@ class TransactionScreen extends StatelessWidget {
       backgroundColor: const Color(0xFF121212),
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: const Text("Transaction History"),
+        title: const Text("Transaction History",
+        style: TextStyle(
+          color: Colors.white
+        ),),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
