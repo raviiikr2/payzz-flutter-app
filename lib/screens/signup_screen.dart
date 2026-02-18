@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'home_screen.dart';
 
-
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
 
@@ -54,11 +53,10 @@ class _SignupScreenState extends State<SignupScreen> {
         'createdAt': FieldValue.serverTimestamp(),
       });
 
-    Navigator.pushReplacement(
-  context,
-  MaterialPageRoute(builder: (_) => const HomeScreen()),
-);
-
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const HomeScreen()),
+      );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Registration Failed")),
@@ -68,63 +66,101 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
-      backgroundColor: const Color(0xFF121212),
-      body: SingleChildScrollView(
+      backgroundColor: theme.scaffoldBackgroundColor,
+      body: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
         padding: const EdgeInsets.all(24),
-        child: Column(
-          children: [
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
 
-            const SizedBox(height: 60),
+              const SizedBox(height: 60),
 
-            const Text(
-              "CREATE ACCOUNT",
-              style: TextStyle(
+              Text(
+                "CREATE ACCOUNT",
+                style: TextStyle(
                   fontSize: 26,
                   fontWeight: FontWeight.bold,
-                  color: Colors.white),
-            ),
+                  color: theme.colorScheme.primary,
+                ),
+              ),
 
-            const SizedBox(height: 40),
+              const SizedBox(height: 40),
 
-            TextField(
-              controller: nameController,
-              style: const TextStyle(color: Colors.white),
-              decoration: const InputDecoration(labelText: "Full Name"),
-            ),
+              _buildField(
+                context,
+                controller: nameController,
+                label: "Full Name",
+              ),
 
-            const SizedBox(height: 20),
+              const SizedBox(height: 20),
 
-            TextField(
-              controller: emailController,
-              style: const TextStyle(color: Colors.white),
-              decoration: const InputDecoration(labelText: "Email"),
-            ),
+              _buildField(
+                context,
+                controller: emailController,
+                label: "Email",
+              ),
 
-            const SizedBox(height: 20),
+              const SizedBox(height: 20),
 
-            TextField(
-              controller: phoneController,
-              style: const TextStyle(color: Colors.white),
-              decoration: const InputDecoration(labelText: "Phone Number"),
-            ),
+              _buildField(
+                context,
+                controller: phoneController,
+                label: "Phone Number",
+              ),
 
-            const SizedBox(height: 20),
+              const SizedBox(height: 20),
 
-            TextField(
-              controller: passwordController,
-              obscureText: true,
-              style: const TextStyle(color: Colors.white),
-              decoration: const InputDecoration(labelText: "Password"),
-            ),
+              _buildField(
+                context,
+                controller: passwordController,
+                label: "Password",
+                obscure: true,
+              ),
 
-            const SizedBox(height: 30),
+              const SizedBox(height: 30),
 
-            ElevatedButton(
-              onPressed: register,
-              child: const Text("Sign Up"),
-            ),
-          ],
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: register,
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                  ),
+                  child: const Text("Sign Up"),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildField(
+    BuildContext context, {
+    required TextEditingController controller,
+    required String label,
+    bool obscure = false,
+  }) {
+    final theme = Theme.of(context);
+
+    return TextField(
+      controller: controller,
+      obscureText: obscure,
+      style: TextStyle(color: theme.colorScheme.onSurface),
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: TextStyle(
+          color: theme.colorScheme.onSurface.withAlpha(70),
+        ),
+        filled: true,
+        fillColor: theme.colorScheme.surfaceContainerHighest,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
         ),
       ),
     );

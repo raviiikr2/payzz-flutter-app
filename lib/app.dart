@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'screens/auth_wrapper.dart';
+import 'auth_wrapper.dart';
 
 class PayzzApp extends StatelessWidget {
   const PayzzApp({super.key});
@@ -12,7 +12,7 @@ class PayzzApp extends StatelessWidget {
       theme: ThemeData(
         brightness: Brightness.dark,
         primarySwatch: Colors.deepPurple,
-        scaffoldBackgroundColor: const Color(0xFF121212),
+        scaffoldBackgroundColor:Theme.of(context).scaffoldBackgroundColor,
       ),
       home: const AuthWrapper(),
     );

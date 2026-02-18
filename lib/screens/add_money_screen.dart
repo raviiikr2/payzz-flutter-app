@@ -32,14 +32,14 @@ class _AddMoneyScreenState extends State<AddMoneyScreen> {
 
   void openCheckout(double amount) {
     var options = {
-      'key': 'rzp_test_SH6kWulpHBxkrq', // 🔴 Replace this
+      'key': 'rzp_test_SH6kWulpHBxkrq',
       'amount': (amount * 100).toInt(), // paise
       'name': 'Payzz Wallet',
       'description': 'Add Money',
       'prefill': {
         'contact': '9999999999',
-        'email': FirebaseAuth.instance.currentUser?.email ?? ''
-      }
+        'email': FirebaseAuth.instance.currentUser?.email ?? '',
+      },
     };
 
     _razorpay.open(options);
@@ -51,8 +51,9 @@ class _AddMoneyScreenState extends State<AddMoneyScreen> {
 
     double amount = double.parse(amountController.text);
 
-    final userRef =
-        FirebaseFirestore.instance.collection('users').doc(user.uid);
+    final userRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid);
 
     await FirebaseFirestore.instance.runTransaction((transaction) async {
       final snapshot = await transaction.get(userRef);
@@ -79,17 +80,17 @@ class _AddMoneyScreenState extends State<AddMoneyScreen> {
       });
     });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Payment Successful")),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text("Payment Successful")));
 
     Navigator.pop(context);
   }
 
   void handlePaymentError(PaymentFailureResponse response) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Payment Failed")),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text("Payment Failed")));
   }
 
   void handleExternalWallet(ExternalWalletResponse response) {}
@@ -97,6 +98,7 @@ class _AddMoneyScreenState extends State<AddMoneyScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(title: const Text("Add Money")),
       body: Padding(
         padding: const EdgeInsets.all(20),
@@ -105,18 +107,25 @@ class _AddMoneyScreenState extends State<AddMoneyScreen> {
             TextField(
               controller: amountController,
               keyboardType: TextInputType.number,
-              decoration: const InputDecoration(labelText: "Enter Amount"),
+              decoration: InputDecoration(
+                labelText: "Enter Amount",
+                labelStyle: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
+              ),
             ),
             const SizedBox(height: 30),
             ElevatedButton(
               onPressed: () {
-                double? amount =
-                    double.tryParse(amountController.text.trim());
+                double? amount = double.tryParse(amountController.text.trim());
                 if (amount != null && amount > 0) {
                   openCheckout(amount);
                 }
               },
-              child: const Text("Pay with Razorpay"),
+              child: Text(
+                "Pay with Razorpay",
+                style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+              ),
             ),
           ],
         ),

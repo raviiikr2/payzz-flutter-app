@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'signup_screen.dart';
 import 'home_screen.dart';
 
-
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -32,11 +31,10 @@ class _LoginScreenState extends State<LoginScreen> {
         password: password,
       );
 
-     Navigator.pushReplacement(
-  context,
-  MaterialPageRoute(builder: (_) => const HomeScreen()),
-);
-
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const HomeScreen()),
+      );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Invalid email or password")),
@@ -46,28 +44,44 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
-      backgroundColor: const Color(0xFF121212),
-      body: Padding(
+      backgroundColor: theme.scaffoldBackgroundColor,
+      body: AnimatedContainer(
+        duration: const Duration(milliseconds: 300), // smooth transition
         padding: const EdgeInsets.all(24),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
 
-            const Text(
+            Text(
               "PAYZZ LOGIN",
               style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white),
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+                color: theme.colorScheme.primary,
+              ),
             ),
 
             const SizedBox(height: 40),
 
             TextField(
               controller: emailController,
-              style: const TextStyle(color: Colors.white),
-              decoration: const InputDecoration(labelText: "Email"),
+              style: TextStyle(
+                color: theme.colorScheme.onSurface,
+              ),
+              decoration: InputDecoration(
+                labelText: "Email",
+                labelStyle: TextStyle(
+                  color: theme.colorScheme.onSurface.withAlpha(70),
+                ),
+                filled: true,
+                fillColor: theme.colorScheme.surfaceContainerHighest,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
             ),
 
             const SizedBox(height: 20),
@@ -75,15 +89,33 @@ class _LoginScreenState extends State<LoginScreen> {
             TextField(
               controller: passwordController,
               obscureText: true,
-              style: const TextStyle(color: Colors.white),
-              decoration: const InputDecoration(labelText: "Password"),
+              style: TextStyle(
+                color: theme.colorScheme.onSurface,
+              ),
+              decoration: InputDecoration(
+                labelText: "Password",
+                labelStyle: TextStyle(
+                  color: theme.colorScheme.onSurface.withAlpha(70),
+                ),
+                filled: true,
+                fillColor: theme.colorScheme.surfaceContainerHighest,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
             ),
 
             const SizedBox(height: 30),
 
-            ElevatedButton(
-              onPressed: login,
-              child: const Text("Login"),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: login,
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                ),
+                child: const Text("Login"),
+              ),
             ),
 
             TextButton(
@@ -93,7 +125,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   MaterialPageRoute(builder: (_) => const SignupScreen()),
                 );
               },
-              child: const Text("Create Account"),
+              child: Text(
+                "Create Account",
+                style: TextStyle(
+                  color: theme.colorScheme.primary,
+                ),
+              ),
             ),
           ],
         ),

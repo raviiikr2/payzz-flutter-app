@@ -14,82 +14,93 @@ class _ScanQrScreenState extends State<ScanQrScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
-      backgroundColor: Colors.black,
-      body: Stack(
-        children: [
+      backgroundColor: Colors.black, // keep camera background black
+      body: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        child: Stack(
+          children: [
 
-          /// Camera Preview
-          MobileScanner(
-            controller: controller,
-            onDetect: (barcodeCapture) {
-              final List<Barcode> barcodes = barcodeCapture.barcodes;
+            /// Camera Preview
+            MobileScanner(
+              controller: controller,
+              onDetect: (barcodeCapture) {
+                final List<Barcode> barcodes = barcodeCapture.barcodes;
 
-              for (final barcode in barcodes) {
-                final String? code = barcode.rawValue;
+                for (final barcode in barcodes) {
+                  final String? code = barcode.rawValue;
 
-                if (code != null) {
-                  Navigator.pop(context, code); // Return scanned result
+                  if (code != null) {
+                    Navigator.pop(context, code);
+                  }
                 }
-              }
-            },
-          ),
+              },
+            ),
 
-          /// Top Bar
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+            /// Top Bar
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 15, vertical: 10),
+                child: Row(
+                  mainAxisAlignment:
+                      MainAxisAlignment.spaceBetween,
+                  children: [
 
-                  /// Back Button
-                  IconButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    icon: const Icon(
-                      Icons.arrow_back,
-                      color: Colors.white,
-                      size: 28,
+                    /// Back Button
+                    IconButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      icon: Icon(
+                        Icons.arrow_back,
+                        color: theme.colorScheme.onPrimary,
+                        size: 28,
+                      ),
                     ),
-                  ),
 
-                  /// Flash Toggle
-                  IconButton(
-                    onPressed: () async {
-                      await controller.toggleTorch();
-                      setState(() {
-                        isFlashOn = !isFlashOn;
-                      });
-                    },
-                    icon: Icon(
-                      isFlashOn
-                          ? Icons.flash_on
-                          : Icons.flash_off,
-                      color: Colors.white,
-                      size: 28,
+                    /// Flash Toggle
+                    IconButton(
+                      onPressed: () async {
+                        await controller.toggleTorch();
+                        setState(() {
+                          isFlashOn = !isFlashOn;
+                        });
+                      },
+                      icon: Icon(
+                        isFlashOn
+                            ? Icons.flash_on
+                            : Icons.flash_off,
+                        color: isFlashOn
+                            ? theme.colorScheme.primary
+                            : theme.colorScheme.onPrimary,
+                        size: 28,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
 
-          /// Center Scanner Frame
-          Center(
-            child: Container(
-              width: 250,
-              height: 250,
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.deepPurple, width: 3),
-                borderRadius: BorderRadius.circular(20),
+            /// Scanner Frame
+            Center(
+              child: Container(
+                width: 260,
+                height: 260,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: theme.colorScheme.primary,
+                    width: 3,
+                  ),
+                  borderRadius: BorderRadius.circular(20),
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 }
- 

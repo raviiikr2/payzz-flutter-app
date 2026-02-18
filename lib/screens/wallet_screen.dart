@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:payzz/bill_payment/credit_card_bill_screen.dart';
+import 'package:payzz/bill_payment/electricity_bill_screen.dart';
 import 'add_money_screen.dart';
 import 'scan_qr_screen.dart';
+import 'wallet_details_screen.dart';
+import 'package:payzz/bill_payment/mobile_recharge_screen.dart';
+import 'package:payzz/app_router.dart';
 
 class WalletScreen extends StatefulWidget {
   const WalletScreen({super.key});
@@ -16,19 +21,16 @@ class _WalletScreenState extends State<WalletScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final user = FirebaseAuth.instance.currentUser;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF121212),
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.black,
         elevation: 0,
-        title: const Text(
-          "Wallet",
-          style: TextStyle(color: Colors.white),
-        ),
+        title: const Text("Wallet"),
         leading: IconButton(
-          icon: const Icon(Icons.menu, color: Colors.white),
+          icon: const Icon(Icons.menu),
           onPressed: () {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text("Menu Coming Soon")),
@@ -37,14 +39,15 @@ class _WalletScreenState extends State<WalletScreen> {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.logout, color: Colors.white),
+            icon: const Icon(Icons.logout),
             onPressed: () async {
               await FirebaseAuth.instance.signOut();
             },
           ),
         ],
       ),
-      body: Padding(
+      body: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
         padding: const EdgeInsets.all(20),
         child: StreamBuilder<DocumentSnapshot>(
           stream: FirebaseFirestore.instance
@@ -70,9 +73,10 @@ class _WalletScreenState extends State<WalletScreen> {
                   /// Welcome
                   Text(
                     "Welcome, $name",
-                    style: const TextStyle(
-                        fontSize: 18,
-                        color: Colors.white),
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: theme.colorScheme.onBackground,
+                    ),
                   ),
 
                   const SizedBox(height: 25),
@@ -95,15 +99,16 @@ class _WalletScreenState extends State<WalletScreen> {
                           CrossAxisAlignment.start,
                       children: [
 
-                        /// Title + Eye
                         Row(
                           mainAxisAlignment:
                               MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text(
+                            Text(
                               "Wallet Balance",
                               style: TextStyle(
-                                  color: Colors.white70),
+                                color: theme.colorScheme.onPrimary
+                                    .withOpacity(0.85),
+                              ),
                             ),
                             IconButton(
                               onPressed: () {
@@ -116,7 +121,8 @@ class _WalletScreenState extends State<WalletScreen> {
                                 isBalanceVisible
                                     ? Icons.visibility
                                     : Icons.visibility_off,
-                                color: Colors.white,
+                                color:
+                                    theme.colorScheme.onPrimary,
                               ),
                             ),
                           ],
@@ -124,92 +130,54 @@ class _WalletScreenState extends State<WalletScreen> {
 
                         const SizedBox(height: 10),
 
-                        /// Balance + Stylish Add Button
                         Row(
                           mainAxisAlignment:
                               MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment:
-                              CrossAxisAlignment.center,
                           children: [
-
-                            /// Balance
                             Text(
                               isBalanceVisible
                                   ? "₹ $balance"
                                   : "₹ ******",
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 30,
                                 fontWeight:
                                     FontWeight.bold,
-                                color: Colors.white,
+                                color: theme
+                                    .colorScheme.onPrimary,
                               ),
                             ),
 
-                            /// Stylish Add Button
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius:
-                                    BorderRadius.circular(30),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black
-                                        .withOpacity(0.25),
-                                    blurRadius: 8,
-                                    offset:
-                                        const Offset(0, 4),
-                                  ),
-                                ],
-                              ),
-                              child: Material(
-                                color: Colors.transparent,
-                                child: InkWell(
+                            ElevatedButton.icon(
+                              style:
+                                  ElevatedButton.styleFrom(
+                                backgroundColor:
+                                    theme.colorScheme
+                                        .surface,
+                                foregroundColor:
+                                    theme.colorScheme
+                                        .primary,
+                                padding:
+                                    const EdgeInsets
+                                        .symmetric(
+                                  horizontal: 18,
+                                  vertical: 10,
+                                ),
+                                shape:
+                                    RoundedRectangleBorder(
                                   borderRadius:
-                                      BorderRadius.circular(
-                                          30),
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (_) =>
-                                            const AddMoneyScreen(),
-                                      ),
-                                    );
-                                  },
-                                  child: Padding(
-                                    padding:
-                                        const EdgeInsets
-                                            .symmetric(
-                                      horizontal: 22,
-                                      vertical: 12,
-                                    ),
-                                    child: Row(
-                                      mainAxisSize:
-                                          MainAxisSize.min,
-                                      children: const [
-                                        Icon(
-                                          Icons.add,
-                                          color: Colors
-                                              .deepPurple,
-                                          size: 20,
-                                        ),
-                                        SizedBox(
-                                            width: 6),
-                                        Text(
-                                          "Add Money",
-                                          style: TextStyle(
-                                            color: Colors
-                                                .deepPurple,
-                                            fontWeight:
-                                                FontWeight
-                                                    .bold,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
+                                      BorderRadius
+                                          .circular(25),
                                 ),
                               ),
+                              icon: const Icon(
+                                  Icons.add,
+                                  size: 18),
+                              label:
+                                  const Text("Add"),
+                              onPressed: () {
+                                Navigator.of(context)
+                                    .push(_createRoute());
+                              },
                             ),
                           ],
                         ),
@@ -219,39 +187,53 @@ class _WalletScreenState extends State<WalletScreen> {
 
                   const SizedBox(height: 35),
 
-                  /// PAY OPTIONS
-                  Wrap(
-                    spacing: 25,
-                    runSpacing: 25,
+                  /// PAY OPTIONS (4 Equal Buttons)
+                  Row(
+                    mainAxisAlignment:
+                        MainAxisAlignment.spaceBetween,
                     children: [
                       _actionButton(
+                        context,
                         icon:
                             Icons.account_balance_wallet,
-                        label: "Pay to UPI ID",
+                        label: "Wallet",
+                        onTap: () {
+                          Navigator.of(context).push(
+                            AppRouter.scale(
+                              const WalletDetailsScreen(),
+                            ),
+                          );
+                        },
+                      ),
+                      _actionButton(
+                        context,
+                        icon: Icons
+                            .account_balance_wallet_outlined,
+                        label: "Pay UPI",
                         onTap: () {
                           _comingSoon(context,
                               "Pay to UPI ID");
                         },
                       ),
                       _actionButton(
+                        context,
                         icon:
                             Icons.account_balance,
-                        label: "Send to Bank",
+                        label: "Bank",
                         onTap: () {
                           _comingSoon(context,
                               "Send to Bank");
                         },
                       ),
                       _actionButton(
+                        context,
                         icon:
                             Icons.qr_code_scanner,
                         label: "Scan",
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) =>
-                                  const ScanQrScreen(),
+                          Navigator.of(context).push(
+                            AppRouter.scale(
+                              const ScanQrScreen(),
                             ),
                           );
                         },
@@ -262,48 +244,65 @@ class _WalletScreenState extends State<WalletScreen> {
                   const SizedBox(height: 40),
 
                   /// BILL PAYMENTS
-                  const Text(
+                  Text(
                     "Bill Payments",
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight:
                           FontWeight.bold,
-                      color: Colors.white,
+                      color:
+                          theme.colorScheme.onSurface,
                     ),
                   ),
 
                   const SizedBox(height: 20),
 
-                  Wrap(
-                    spacing: 25,
-                    runSpacing: 25,
+                  Row(
+                    mainAxisAlignment:
+                        MainAxisAlignment.spaceBetween,
                     children: [
                       _actionButton(
+                        context,
                         icon: Icons.phone_android,
                         label: "Mobile",
                         onTap: () {
-                          _comingSoon(context,
-                              "Mobile Recharge");
+                          Navigator.push(
+                            context,
+                            AppRouter.fade(
+                              const MobileRechargeScreen(),
+                            ),
+                          );
                         },
                       ),
                       _actionButton(
+                        context,
                         icon:
                             Icons.electric_bolt,
                         label: "Electricity",
                         onTap: () {
-                          _comingSoon(context,
-                              "Electric Bill");
+                          Navigator.push(
+                            context,
+                            AppRouter.fade(
+                              const ElectricityBillScreen(),
+                            ),
+                          );
                         },
                       ),
                       _actionButton(
+                        context,
                         icon: Icons.credit_card,
                         label: "Credit Card",
                         onTap: () {
-                          _comingSoon(context,
-                              "Credit Card Bill");
+                          Navigator.push(
+                            context,
+                            AppRouter.fade(
+                              const CreditCardBillScreen(),
+                            ),
+                          );
                         },
                       ),
                       _actionButton(
+                        context,
                         icon: Icons.more_horiz,
                         label: "More",
                         onTap: () {
@@ -322,34 +321,43 @@ class _WalletScreenState extends State<WalletScreen> {
     );
   }
 
-  Widget _actionButton({
+  Widget _actionButton(
+    BuildContext context, {
     required IconData icon,
     required String label,
     required VoidCallback onTap,
   }) {
+    final theme = Theme.of(context);
+
     return SizedBox(
-      width: 90,
+      width: 75,
       child: Column(
         children: [
           GestureDetector(
             onTap: onTap,
             child: Container(
-              padding: const EdgeInsets.all(18),
-              decoration: const BoxDecoration(
-                color: Colors.white12,
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color:
+                    theme.colorScheme.surfaceContainerHighest,
                 shape: BoxShape.circle,
               ),
-              child: Icon(icon,
-                  color: Colors.white),
+              child: Icon(
+                icon,
+                color:
+                    theme.colorScheme.onSurface,
+              ),
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 6),
           Text(
             label,
             textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: Colors.white70,
-              fontSize: 12,
+            style: TextStyle(
+              color: theme.colorScheme
+                  .onSurface
+                  .withAlpha(80),
+              fontSize: 11,
             ),
           ),
         ],
@@ -361,8 +369,28 @@ class _WalletScreenState extends State<WalletScreen> {
       BuildContext context, String title) {
     ScaffoldMessenger.of(context)
         .showSnackBar(
-      SnackBar(
-          content: Text("$title Coming Soon")),
+      SnackBar(content: Text("$title Coming Soon")),
+    );
+  }
+
+  Route _createRoute() {
+    return PageRouteBuilder(
+      transitionDuration:
+          const Duration(milliseconds: 350),
+      pageBuilder:
+          (_, animation, _) =>
+              const AddMoneyScreen(),
+      transitionsBuilder:
+          (_, animation, _, child) {
+        return SlideTransition(
+          position: Tween(
+            begin: const Offset(0, 1),
+            end: Offset.zero,
+          ).animate(animation),
+          child:
+              FadeTransition(opacity: animation, child: child),
+        );
+      },
     );
   }
 }

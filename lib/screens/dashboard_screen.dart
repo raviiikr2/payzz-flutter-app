@@ -13,11 +13,13 @@ class DashboardScreen extends StatelessWidget {
     final user = FirebaseAuth.instance.currentUser;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF121212),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.black,
+       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+
         elevation: 0,
-        title: const Text("Payzz", style: TextStyle(color: Colors.white)),
+        title:  Text("Payzz", style: TextStyle(color: Theme.of(context).colorScheme.onSurface,
+)),
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
@@ -50,10 +52,11 @@ StreamBuilder<DocumentSnapshot>(
 
     return Text(
       "Welcome, $name",
-      style: const TextStyle(
+      style:  TextStyle(
         fontSize: 20,
         fontWeight: FontWeight.bold,
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.onSurface,
+
       ),
     );
   },
@@ -89,19 +92,21 @@ StreamBuilder<DocumentSnapshot>(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
+                       Text(
                         "Wallet Balance",
-                        style: TextStyle(color: Colors.white70),
+                        style: TextStyle(color: Theme.of(context).colorScheme.onSurface,
+),
                       ),
                       const SizedBox(height: 10),
                       Text(
                         "₹ $balance",
-                        style: const TextStyle(
+                        style:  TextStyle(
                           fontSize: 30,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                          color: Theme.of(context).colorScheme.onSurface,
+),
                         ),
-                      ),
+          
                     ],
                   ),
                 );
@@ -112,9 +117,9 @@ StreamBuilder<DocumentSnapshot>(
 
             /// Quick Actions Card
             Container(
-              padding: const EdgeInsets.all(20),
+              padding:  EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.black87,
+                color: Theme.of(context).colorScheme.onSurface,
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Row(
@@ -166,12 +171,12 @@ StreamBuilder<DocumentSnapshot>(
             const SizedBox(height: 40),
 
             /// Transactions Title
-            const Text(
+             Text(
               "Recent Transactions",
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color:Theme.of(context).colorScheme.onSurface,
               ),
             ),
 
@@ -194,9 +199,9 @@ StreamBuilder<DocumentSnapshot>(
                 final transactions = snapshot.data!.docs;
 
                 if (transactions.isEmpty) {
-                  return const Text(
+                  return  Text(
                     "No transactions yet",
-                    style: TextStyle(color: Colors.white54),
+                    style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
                   );
                 }
 
