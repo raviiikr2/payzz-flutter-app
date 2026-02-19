@@ -54,8 +54,8 @@ class WalletDetailsScreen extends StatelessWidget {
                       Text(
                         "Wallet Balance",
                         style: TextStyle(
-                          color: theme.colorScheme.onPrimary
-                              .withAlpha(60),
+                          color: Colors.white
+                              ,
                         ),
                       ),
                       const SizedBox(height: 10),
@@ -64,7 +64,7 @@ class WalletDetailsScreen extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.bold,
-                          color: theme.colorScheme.onPrimary,
+                          color: Colors.white,
                         ),
                       ),
                     ],
@@ -175,8 +175,8 @@ class WalletDetailsScreen extends StatelessWidget {
                               style: TextStyle(
                                 color: theme
                                     .colorScheme
-                                    .onSurface
-                                    .withAlpha(60),
+                                    .onSurface.withAlpha(90)
+                                    ,
                               ),
                             ),
                             trailing: Text(

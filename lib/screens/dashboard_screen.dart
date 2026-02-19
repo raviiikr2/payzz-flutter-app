@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'add_money_screen.dart';
 import 'send_money_screen.dart';
 import 'scan_qr_screen.dart';
+import 'app_drawer.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
@@ -11,24 +12,44 @@ class DashboardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
+    final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: AppBar(
-       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: theme.scaffoldBackgroundColor,
 
+      /// ✅ Drawer Added
+      drawer: const AppDrawer(),
+
+      appBar: AppBar(
+        backgroundColor: theme.scaffoldBackgroundColor,
         elevation: 0,
-        title:  Text("Payzz", style: TextStyle(color: Theme.of(context).colorScheme.onSurface,
-)),
+
+        /// ✅ Menu Button
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: const Icon(Icons.menu),
+            onPressed: () {
+              Scaffold.of(context).openDrawer();
+            },
+          ),
+        ),
+
+        title: Text(
+          "Payzz",
+          style: TextStyle(
+            color: theme.colorScheme.onSurface,
+          ),
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () async {
               await FirebaseAuth.instance.signOut();
             },
-          )
+          ),
         ],
       ),
+
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -36,32 +57,30 @@ class DashboardScreen extends StatelessWidget {
           children: [
 
             /// Welcome Section
-StreamBuilder<DocumentSnapshot>(
-  stream: FirebaseFirestore.instance
-      .collection('users')
-      .doc(user!.uid)
-      .snapshots(),
-  builder: (context, snapshot) {
+            StreamBuilder<DocumentSnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(user!.uid)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                String name = "User";
 
-    String name = "User";
+                if (snapshot.hasData && snapshot.data!.exists) {
+                  final data =
+                      snapshot.data!.data() as Map<String, dynamic>;
+                  name = data['name'] ?? "User";
+                }
 
-    if (snapshot.hasData && snapshot.data!.exists) {
-      final data = snapshot.data!.data() as Map<String, dynamic>;
-      name = data['name'] ?? "User";
-    }
-
-    return Text(
-      "Welcome, $name",
-      style:  TextStyle(
-        fontSize: 20,
-        fontWeight: FontWeight.bold,
-        color: Theme.of(context).colorScheme.onSurface,
-
-      ),
-    );
-  },
-),
-
+                return Text(
+                  "Welcome, $name",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: theme.colorScheme.onSurface,
+                  ),
+                );
+              },
+            ),
 
             const SizedBox(height: 30),
 
@@ -85,28 +104,31 @@ StreamBuilder<DocumentSnapshot>(
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
-                      colors: [Colors.deepPurple, Colors.purpleAccent],
+                      colors: [
+                        Colors.deepPurple,
+                        Colors.purpleAccent
+                      ],
                     ),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                       Text(
+                      Text(
                         "Wallet Balance",
-                        style: TextStyle(color: Theme.of(context).colorScheme.onSurface,
-),
+                        style: TextStyle(
+                          color: theme.colorScheme.onSurface,
+                        ),
                       ),
                       const SizedBox(height: 10),
                       Text(
                         "₹ $balance",
-                        style:  TextStyle(
+                        style: TextStyle(
                           fontSize: 30,
                           fontWeight: FontWeight.bold,
-                          color: Theme.of(context).colorScheme.onSurface,
-),
+                          color: theme.colorScheme.onSurface,
                         ),
-          
+                      ),
                     ],
                   ),
                 );
@@ -117,13 +139,14 @@ StreamBuilder<DocumentSnapshot>(
 
             /// Quick Actions Card
             Container(
-              padding:  EdgeInsets.all(20),
+              padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.onSurface,
+                color: theme.colorScheme.onSurface,
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment:
+                    MainAxisAlignment.spaceAround,
                 children: [
                   _modernActionButton(
                     icon: Icons.add_circle_outline,
@@ -133,7 +156,8 @@ StreamBuilder<DocumentSnapshot>(
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => const AddMoneyScreen(),
+                          builder: (_) =>
+                              const AddMoneyScreen(),
                         ),
                       );
                     },
@@ -146,7 +170,8 @@ StreamBuilder<DocumentSnapshot>(
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => const SendMoneyScreen(),
+                          builder: (_) =>
+                              const SendMoneyScreen(),
                         ),
                       );
                     },
@@ -159,7 +184,8 @@ StreamBuilder<DocumentSnapshot>(
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => const ScanQrScreen(),
+                          builder: (_) =>
+                              const ScanQrScreen(),
                         ),
                       );
                     },
@@ -171,12 +197,12 @@ StreamBuilder<DocumentSnapshot>(
             const SizedBox(height: 40),
 
             /// Transactions Title
-             Text(
+            Text(
               "Recent Transactions",
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color:Theme.of(context).colorScheme.onSurface,
+                color: theme.colorScheme.onSurface,
               ),
             ),
 
@@ -196,32 +222,43 @@ StreamBuilder<DocumentSnapshot>(
                       child: CircularProgressIndicator());
                 }
 
-                final transactions = snapshot.data!.docs;
+                final transactions =
+                    snapshot.data!.docs;
 
                 if (transactions.isEmpty) {
-                  return  Text(
+                  return Text(
                     "No transactions yet",
-                    style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+                    style: TextStyle(
+                      color:
+                          theme.colorScheme.onSurface,
+                    ),
                   );
                 }
 
                 return ListView.builder(
                   shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
+                  physics:
+                      const NeverScrollableScrollPhysics(),
                   itemCount: transactions.length,
                   itemBuilder: (context, index) {
-                    final data = transactions[index].data()
-                        as Map<String, dynamic>;
+                    final data =
+                        transactions[index].data()
+                            as Map<String, dynamic>;
 
-                    final isCredit = data['type'] == 'credit';
-                    final source = data['source'] ?? "Unknown";
-                    final amount = data['amount'] ?? 0;
+                    final isCredit =
+                        data['type'] == 'credit';
+                    final source =
+                        data['source'] ?? "Unknown";
+                    final amount =
+                        data['amount'] ?? 0;
 
                     return ListTile(
-                      contentPadding: EdgeInsets.zero,
+                      contentPadding:
+                          EdgeInsets.zero,
                       title: Text(
                         source,
-                        style: const TextStyle(color: Colors.white),
+                        style: const TextStyle(
+                            color: Colors.white),
                       ),
                       trailing: Text(
                         "${isCredit ? "+" : "-"} ₹$amount",
@@ -229,7 +266,8 @@ StreamBuilder<DocumentSnapshot>(
                           color: isCredit
                               ? Colors.green
                               : Colors.red,
-                          fontWeight: FontWeight.bold,
+                          fontWeight:
+                              FontWeight.bold,
                         ),
                       ),
                     );
@@ -243,7 +281,7 @@ StreamBuilder<DocumentSnapshot>(
     );
   }
 
-  // Modern Action Button
+  /// Modern Action Button
   static Widget _modernActionButton({
     required IconData icon,
     required String label,
@@ -255,19 +293,22 @@ StreamBuilder<DocumentSnapshot>(
       child: Column(
         children: [
           Container(
-            padding: const EdgeInsets.all(18),
+            padding:
+                const EdgeInsets.all(18),
             decoration: BoxDecoration(
               color: color.withAlpha(15),
               shape: BoxShape.circle,
             ),
-            child: Icon(icon, color: color, size: 28),
+            child: Icon(icon,
+                color: color, size: 28),
           ),
           const SizedBox(height: 10),
           Text(
             label,
             style: const TextStyle(
               color: Colors.white,
-              fontWeight: FontWeight.w500,
+              fontWeight:
+                  FontWeight.w500,
             ),
           ),
         ],

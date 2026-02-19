@@ -10,6 +10,7 @@ import 'scan_qr_screen.dart';
 import 'wallet_details_screen.dart';
 import 'package:payzz/bill_payment/mobile_recharge_screen.dart';
 import 'package:payzz/app_router.dart';
+import 'app_drawer.dart';
 
 class WalletScreen extends StatefulWidget {
   const WalletScreen({super.key});
@@ -28,16 +29,23 @@ class _WalletScreenState extends State<WalletScreen> {
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
+
+
       appBar: AppBar(
         elevation: 0,
-        title: const Text("Wallet"),
-        leading: IconButton(
-          icon: const Icon(Icons.menu),
-          onPressed: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text("Menu Coming Soon")),
-            );
-          },
+        title: const Text("Payzz"),
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: const Icon(Icons.menu),
+            onPressed: () {
+              Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const AppDrawer(),
+        ),
+      );
+            },
+          ),
         ),
         actions: [
           IconButton(
@@ -48,6 +56,7 @@ class _WalletScreenState extends State<WalletScreen> {
           ),
         ],
       ),
+
       body: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         padding: const EdgeInsets.all(20),
@@ -87,7 +96,7 @@ class _WalletScreenState extends State<WalletScreen> {
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(25),
-                    decoration: BoxDecoration(
+                    decoration:  BoxDecoration(
                       gradient: const LinearGradient(
                         colors: [
                           Colors.deepPurple,
@@ -107,10 +116,7 @@ class _WalletScreenState extends State<WalletScreen> {
                           children: [
                             Text(
                               "Wallet Balance",
-                              style: TextStyle(
-                                color: Colors.white
-                                    ,
-                              ),
+                              style: theme.textTheme.labelLarge,
                             ),
                             IconButton(
                               onPressed: () {
@@ -123,8 +129,6 @@ class _WalletScreenState extends State<WalletScreen> {
                                 isBalanceVisible
                                     ? Icons.visibility
                                     : Icons.visibility_off,
-                                color:
-                                    Colors.white,
                               ),
                             ),
                           ],
@@ -138,43 +142,18 @@ class _WalletScreenState extends State<WalletScreen> {
                           children: [
                             Text(
                               isBalanceVisible
-                                  ? "₹ $balance"
+                                  ? "₹ ${balance.toStringAsFixed(2)}"
                                   : "₹ ******",
-                              style: TextStyle(
-                                fontSize: 30,
-                                fontWeight:
-                                    FontWeight.bold,
-                                color: Colors.white,
-                              ),
+                              style: theme.textTheme.headlineMedium!
+                                  .copyWith(
+                                      fontWeight:
+                                          FontWeight.bold),
                             ),
 
                             ElevatedButton.icon(
-                              style:
-                                  ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    theme.colorScheme
-                                        .surface,
-                                foregroundColor:
-                                    theme.colorScheme
-                                        .primary,
-                                padding:
-                                    const EdgeInsets
-                                        .symmetric(
-                                  horizontal: 18,
-                                  vertical: 10,
-                                ),
-                                shape:
-                                    RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius
-                                          .circular(25),
-                                ),
-                              ),
-                              icon: const Icon(
-                                  Icons.add,
+                              icon: const Icon(Icons.add,
                                   size: 18),
-                              label:
-                                  const Text("Add"),
+                              label: const Text("Add"),
                               onPressed: () {
                                 Navigator.of(context)
                                     .push(_createRoute());
@@ -188,7 +167,7 @@ class _WalletScreenState extends State<WalletScreen> {
 
                   const SizedBox(height: 35),
 
-                  /// PAY OPTIONS (4 Equal Buttons)
+                  /// PAY OPTIONS
                   Row(
                     mainAxisAlignment:
                         MainAxisAlignment.spaceBetween,
@@ -212,12 +191,11 @@ class _WalletScreenState extends State<WalletScreen> {
                             .account_balance_wallet_outlined,
                         label: "Pay UPI",
                         onTap: () {
-                           Navigator.of(context).push(
+                          Navigator.of(context).push(
                             AppRouter.scale(
                               const PayToUpiScreen(),
                             ),
                           );
-                          
                         },
                       ),
                       _actionButton(
@@ -226,7 +204,7 @@ class _WalletScreenState extends State<WalletScreen> {
                             Icons.account_balance,
                         label: "Bank",
                         onTap: () {
-                           Navigator.of(context).push(
+                          Navigator.of(context).push(
                             AppRouter.scale(
                               const SendToBankScreen(),
                             ),
@@ -251,7 +229,7 @@ class _WalletScreenState extends State<WalletScreen> {
 
                   const SizedBox(height: 40),
 
-                  /// BILL PAYMENTS
+                  /// BILL PAYMENTS TITLE
                   Text(
                     "Bill Payments",
                     style: TextStyle(
@@ -265,6 +243,7 @@ class _WalletScreenState extends State<WalletScreen> {
 
                   const SizedBox(height: 20),
 
+                  /// BILL BUTTONS
                   Row(
                     mainAxisAlignment:
                         MainAxisAlignment.spaceBetween,
@@ -362,9 +341,7 @@ class _WalletScreenState extends State<WalletScreen> {
             label,
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: theme.colorScheme
-                  .onSurface
-                  ,
+              color: theme.colorScheme.onSurface,
               fontSize: 11,
             ),
           ),
@@ -395,8 +372,8 @@ class _WalletScreenState extends State<WalletScreen> {
             begin: const Offset(0, 1),
             end: Offset.zero,
           ).animate(animation),
-          child:
-              FadeTransition(opacity: animation, child: child),
+          child: FadeTransition(
+              opacity: animation, child: child),
         );
       },
     );

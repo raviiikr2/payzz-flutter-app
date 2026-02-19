@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:payzz/bill_payment/bill_status_screen.dart';
 
 class PayToUpiScreen extends StatefulWidget {
-  const PayToUpiScreen({super.key});
+  final String? initialUpi;
+
+  const PayToUpiScreen({super.key, this.initialUpi});
 
   @override
   State<PayToUpiScreen> createState() => _PayToUpiScreenState();
@@ -11,6 +13,23 @@ class PayToUpiScreen extends StatefulWidget {
 class _PayToUpiScreenState extends State<PayToUpiScreen> {
   final upiController = TextEditingController();
   final amountController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    /// 🔥 Autofill scanned UPI
+    if (widget.initialUpi != null) {
+      upiController.text = widget.initialUpi!;
+    }
+  }
+
+  @override
+  void dispose() {
+    upiController.dispose();
+    amountController.dispose();
+    super.dispose();
+  }
 
   bool isValidUpi(String upi) {
     final regex = RegExp(r'^[\w.-]+@[\w.-]+$');
@@ -60,7 +79,7 @@ class _PayToUpiScreenState extends State<PayToUpiScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
 
-            /// 🔹 UPI FIELD CARD
+            /// 🔹 UPI FIELD
             Text(
               "UPI ID",
               style: theme.textTheme.labelMedium,
@@ -87,7 +106,6 @@ class _PayToUpiScreenState extends State<PayToUpiScreen> {
                       onChanged: (_) => setState(() {}),
                     ),
                   ),
-
                   if (isValidUpi(upiController.text))
                     const Icon(Icons.check_circle,
                         color: Colors.green),
@@ -97,7 +115,7 @@ class _PayToUpiScreenState extends State<PayToUpiScreen> {
 
             const SizedBox(height: 30),
 
-            /// 🔹 AMOUNT SECTION
+            /// 🔹 AMOUNT FIELD
             Text(
               "Amount",
               style: theme.textTheme.labelMedium,
@@ -105,8 +123,8 @@ class _PayToUpiScreenState extends State<PayToUpiScreen> {
             const SizedBox(height: 8),
 
             Container(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: 16, vertical: 8),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
                 color: theme.colorScheme.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(16),
@@ -136,7 +154,7 @@ class _PayToUpiScreenState extends State<PayToUpiScreen> {
 
             const SizedBox(height: 20),
 
-            /// Quick Amount Chips
+            /// 🔹 QUICK AMOUNT CHIPS
             Wrap(
               spacing: 10,
               children: [
@@ -161,12 +179,12 @@ class _PayToUpiScreenState extends State<PayToUpiScreen> {
                   ),
                 ),
                 onPressed: processPayment,
-                child:  Text(
+                child: Text(
                   "Pay Now",
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: theme.colorScheme.onPrimary
+                    color: theme.colorScheme.onPrimary,
                   ),
                 ),
               ),
@@ -183,16 +201,15 @@ class _PayToUpiScreenState extends State<PayToUpiScreen> {
         amountController.text = amount.toString();
       },
       child: Container(
-        padding: const EdgeInsets.symmetric(
-            horizontal: 16, vertical: 8),
+        padding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: Colors.deepPurple.withAlpha(15),
+          color: Colors.deepPurple.withAlpha(20),
           borderRadius: BorderRadius.circular(20),
         ),
         child: Text(
           "₹ $amount",
-          style: const TextStyle(
-              fontWeight: FontWeight.w600),
+          style: const TextStyle(fontWeight: FontWeight.w600),
         ),
       ),
     );
