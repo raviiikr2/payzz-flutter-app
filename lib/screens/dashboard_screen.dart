@@ -243,7 +243,7 @@ StreamBuilder<DocumentSnapshot>(
     );
   }
 
-  /// Modern Action Button
+  // Modern Action Button
   static Widget _modernActionButton({
     required IconData icon,
     required String label,
@@ -257,7 +257,7 @@ StreamBuilder<DocumentSnapshot>(
           Container(
             padding: const EdgeInsets.all(18),
             decoration: BoxDecoration(
-              color: color.withOpacity(0.15),
+              color: color.withAlpha(15),
               shape: BoxShape.circle,
             ),
             child: Icon(icon, color: color, size: 28),

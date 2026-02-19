@@ -21,7 +21,7 @@ class AppRouter {
     );
   }
 
-  /// Slide From Bottom
+  // Slide From Bottom
   static Route slideUp(Widget page) {
     return PageRouteBuilder(
       transitionDuration: const Duration(milliseconds: 350),
@@ -41,7 +41,7 @@ class AppRouter {
     );
   }
 
-  /// Fade
+  // Fade
   static Route fade(Widget page) {
     return PageRouteBuilder(
       transitionDuration: const Duration(milliseconds: 300),
@@ -55,7 +55,7 @@ class AppRouter {
     );
   }
 
-  /// Scale
+  // Scale
   static Route scale(Widget page) {
     return PageRouteBuilder(
       transitionDuration: const Duration(milliseconds: 350),

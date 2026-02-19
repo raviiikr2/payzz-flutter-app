@@ -70,7 +70,7 @@ class _MobileRechargeScreenState extends State<MobileRechargeScreen> {
             const SizedBox(height: 8),
 
             DropdownButtonFormField<String>(
-              value: selectedOperator,
+              initialValue: selectedOperator,
               dropdownColor: Colors.grey[900],
               style: const TextStyle(color: Colors.white),
               decoration: InputDecoration(

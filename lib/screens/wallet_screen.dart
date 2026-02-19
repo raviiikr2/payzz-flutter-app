@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:payzz/bill_payment/credit_card_bill_screen.dart';
 import 'package:payzz/bill_payment/electricity_bill_screen.dart';
+import 'package:payzz/payment/pay_to_upi_screen.dart';
+import 'package:payzz/payment/send_to_bank_screen.dart';
 import 'add_money_screen.dart';
 import 'scan_qr_screen.dart';
 import 'wallet_details_screen.dart';
@@ -75,7 +77,7 @@ class _WalletScreenState extends State<WalletScreen> {
                     "Welcome, $name",
                     style: TextStyle(
                       fontSize: 18,
-                      color: theme.colorScheme.onBackground,
+                      color: theme.colorScheme.onSurface,
                     ),
                   ),
 
@@ -106,8 +108,8 @@ class _WalletScreenState extends State<WalletScreen> {
                             Text(
                               "Wallet Balance",
                               style: TextStyle(
-                                color: theme.colorScheme.onPrimary
-                                    .withOpacity(0.85),
+                                color: Colors.white
+                                    ,
                               ),
                             ),
                             IconButton(
@@ -122,7 +124,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                     ? Icons.visibility
                                     : Icons.visibility_off,
                                 color:
-                                    theme.colorScheme.onPrimary,
+                                    Colors.white,
                               ),
                             ),
                           ],
@@ -142,8 +144,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                 fontSize: 30,
                                 fontWeight:
                                     FontWeight.bold,
-                                color: theme
-                                    .colorScheme.onPrimary,
+                                color: Colors.white,
                               ),
                             ),
 
@@ -211,8 +212,12 @@ class _WalletScreenState extends State<WalletScreen> {
                             .account_balance_wallet_outlined,
                         label: "Pay UPI",
                         onTap: () {
-                          _comingSoon(context,
-                              "Pay to UPI ID");
+                           Navigator.of(context).push(
+                            AppRouter.scale(
+                              const PayToUpiScreen(),
+                            ),
+                          );
+                          
                         },
                       ),
                       _actionButton(
@@ -221,8 +226,11 @@ class _WalletScreenState extends State<WalletScreen> {
                             Icons.account_balance,
                         label: "Bank",
                         onTap: () {
-                          _comingSoon(context,
-                              "Send to Bank");
+                           Navigator.of(context).push(
+                            AppRouter.scale(
+                              const SendToBankScreen(),
+                            ),
+                          );
                         },
                       ),
                       _actionButton(
@@ -356,7 +364,7 @@ class _WalletScreenState extends State<WalletScreen> {
             style: TextStyle(
               color: theme.colorScheme
                   .onSurface
-                  .withAlpha(80),
+                  ,
               fontSize: 11,
             ),
           ),

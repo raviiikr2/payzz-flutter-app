@@ -20,10 +20,9 @@ class PayzzApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
 
-      /// 👇 Important Line
       themeMode: ThemeMode.system,
 
-      /// 🌞 Light Theme
+ 
       theme: ThemeData(
         brightness: Brightness.light,
         scaffoldBackgroundColor: Colors.white,
