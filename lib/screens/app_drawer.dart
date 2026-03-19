@@ -11,13 +11,20 @@ class AppDrawer extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
+    // Smart name fallback
+    final displayName = user?.displayName;
+    final email = user?.email;
+    final userName = (displayName != null && displayName.isNotEmpty)
+        ? displayName
+        : (email != null ? email.split('@').first : "");
+
     return Scaffold(
       backgroundColor: colorScheme.surface,
 
-      /// ✅ Back Button AppBar
+      /// Back Button AppBar
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: colorScheme.surface,
+        backgroundColor: Colors.deepPurple,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
@@ -34,11 +41,13 @@ class AppDrawer extends StatelessWidget {
           double balance = 0;
 
           if (snapshot.hasData && snapshot.data!.exists) {
-            balance = (snapshot.data!.get('balance') ?? 0).toDouble();
+            balance =
+                (snapshot.data!.get('balance') ?? 0).toDouble();
           }
 
           return Column(
             children: [
+
               /// Scrollable Content
               Expanded(
                 child: SingleChildScrollView(
@@ -46,6 +55,7 @@ class AppDrawer extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+
                       const SizedBox(height: 10),
 
                       /// 👤 Profile Section
@@ -53,26 +63,39 @@ class AppDrawer extends StatelessWidget {
                         children: [
                           CircleAvatar(
                             radius: 35,
-                            backgroundColor: colorScheme.primaryContainer,
+                            backgroundColor:
+                                colorScheme.primaryContainer,
                             child: const Text(
                               "😊",
-                              style: TextStyle(fontSize: 30),
+                              style:
+                                  TextStyle(fontSize: 30),
                             ),
                           ),
                           const SizedBox(width: 15),
                           Expanded(
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              crossAxisAlignment:
+                                  CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  user?.displayName ?? "Ravi Kumar",
-                                  style: theme.textTheme.titleLarge!.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                  userName,
+                                  style: theme
+                                      .textTheme.titleLarge!
+                                      .copyWith(
+                                        fontWeight:
+                                            FontWeight.bold,
+                                        color: colorScheme
+                                            .onSurface,
+                                      ),
                                 ),
                                 Text(
-                                  user?.email ?? "",
-                                  style: theme.textTheme.bodyMedium,
+                                  email ?? "",
+                                  style: theme
+                                      .textTheme.bodyMedium!
+                                      .copyWith(
+                                        color: colorScheme
+                                            .onSurfaceVariant,
+                                      ),
                                 ),
                               ],
                             ),
@@ -84,33 +107,43 @@ class AppDrawer extends StatelessWidget {
 
                       /// 💰 Wallet Section
                       Container(
-                        padding: const EdgeInsets.all(20),
+                        padding:
+                            const EdgeInsets.all(20),
                         decoration: BoxDecoration(
                           color: colorScheme.surface,
-                          borderRadius: BorderRadius.circular(18),
+                          borderRadius:
+                              BorderRadius.circular(18),
                         ),
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          crossAxisAlignment:
+                              CrossAxisAlignment.start,
                           children: [
                             Text(
                               "Wallet Balance",
-                              style: theme.textTheme.labelLarge,
+                              style: theme
+                                  .textTheme.labelLarge,
                             ),
                             const SizedBox(height: 8),
                             Text(
                               "₹${balance.toStringAsFixed(2)}",
-                              style: theme.textTheme.headlineMedium!.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: theme
+                                  .textTheme.headlineMedium!
+                                  .copyWith(
+                                    fontWeight:
+                                        FontWeight.bold,
+                                  ),
                             ),
                             const SizedBox(height: 15),
                             SizedBox(
                               width: double.infinity,
                               child: ElevatedButton(
                                 onPressed: () {
-                                  Navigator.pushNamed(context, '/addMoney');
+                                  Navigator.pushNamed(
+                                      context,
+                                      '/addMoney');
                                 },
-                                child: const Text("Add Money"),
+                                child: const Text(
+                                    "Add Money"),
                               ),
                             ),
                           ],
@@ -122,14 +155,21 @@ class AppDrawer extends StatelessWidget {
                       /// Manage Section
                       Text(
                         "Manage",
-                        style: theme.textTheme.titleMedium!.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: theme
+                            .textTheme.titleMedium!
+                            .copyWith(
+                              fontWeight:
+                                  FontWeight.bold,
+                              color: colorScheme
+                                  .onSurface,
+                            ),
                       ),
                       const SizedBox(height: 15),
                       ListTile(
-                        leading: const Icon(Icons.edit),
-                        title: const Text("Edit Profile"),
+                        leading:
+                            const Icon(Icons.edit),
+                        title:
+                            const Text("Edit Profile"),
                         onTap: () {},
                       ),
 
@@ -138,24 +178,35 @@ class AppDrawer extends StatelessWidget {
                       /// Support Section
                       Text(
                         "Support & Settings",
-                        style: theme.textTheme.titleMedium!.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: theme
+                            .textTheme.titleMedium!
+                            .copyWith(
+                              fontWeight:
+                                  FontWeight.bold,
+                              color: colorScheme
+                                  .onSurface,
+                            ),
                       ),
                       const SizedBox(height: 15),
                       ListTile(
-                        leading: const Icon(Icons.help_outline),
-                        title: const Text("Help"),
+                        leading: const Icon(
+                            Icons.help_outline),
+                        title:
+                            const Text("Help"),
                         onTap: () {},
                       ),
                       ListTile(
-                        leading: const Icon(Icons.privacy_tip_outlined),
-                        title: const Text("Privacy Policy"),
+                        leading: const Icon(Icons
+                            .privacy_tip_outlined),
+                        title: const Text(
+                            "Privacy Policy"),
                         onTap: () {},
                       ),
                       ListTile(
-                        leading: const Icon(Icons.info_outline),
-                        title: const Text("About"),
+                        leading: const Icon(
+                            Icons.info_outline),
+                        title:
+                            const Text("About"),
                         onTap: () {},
                       ),
                     ],
@@ -163,25 +214,33 @@ class AppDrawer extends StatelessWidget {
                 ),
               ),
 
-              /// 🔴 Sign Out Button (Fixed at Bottom)
-              Padding(
-                padding: const EdgeInsets.all(20),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: OutlinedButton.icon(
-                    icon: const Icon(Icons.logout),
-                    label: const Text("Sign Out"),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: colorScheme.error,
+              /// 🔴 Sign Out Button at Bottom
+              SafeArea(
+                top: false,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                      20, 10, 20, 20),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton.icon(
+                      icon:
+                          const Icon(Icons.logout),
+                      label:
+                          const Text("Sign Out"),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor:
+                            colorScheme.error,
+                      ),
+                      onPressed: () async {
+                        await FirebaseAuth.instance
+                            .signOut();
+                        if (context.mounted) {
+                          Navigator.of(context)
+                              .popUntil((route) =>
+                                  route.isFirst);
+                        }
+                      },
                     ),
-                    onPressed: () async {
-                      await FirebaseAuth.instance.signOut();
-                      if (context.mounted) {
-                        Navigator.of(
-                          context,
-                        ).popUntil((route) => route.isFirst);
-                      }
-                    },
                   ),
                 ),
               ),

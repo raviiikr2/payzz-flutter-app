@@ -26,18 +26,26 @@ class _ElectricityBillScreenState
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Scaffold(
-      backgroundColor: const Color(0xFF121212),
+      backgroundColor: theme.scaffoldBackgroundColor,
+
+      /// Keep AppBar Color Same
       appBar: AppBar(
-        backgroundColor: Colors.black,
-        title: const Text("Electricity Bill",
-            style: TextStyle(color: Colors.white)),
+        backgroundColor: Colors.deepPurple,
+        title: const Text(
+          "Electricity Bill",
+          style: TextStyle(color: Colors.white),
+        ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back,
               color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
       ),
+
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -45,27 +53,40 @@ class _ElectricityBillScreenState
               CrossAxisAlignment.start,
           children: [
 
-            const Text("Consumer Number",
-                style: TextStyle(
-                    color: Colors.white70)),
+            Text(
+              "Consumer Number",
+              style: theme.textTheme.labelLarge!
+                  .copyWith(
+                color: colorScheme.onSurface,
+              ),
+            ),
             const SizedBox(height: 8),
 
-            _inputField(consumerController,
-                "Enter consumer number"),
+            _inputField(
+              controller: consumerController,
+              hint: "Enter consumer number",
+              context: context,
+            ),
 
             const SizedBox(height: 20),
 
-            const Text("Provider",
-                style: TextStyle(
-                    color: Colors.white70)),
+            Text(
+              "Provider",
+              style: theme.textTheme.labelLarge!
+                  .copyWith(
+                color: colorScheme.onSurface,
+              ),
+            ),
             const SizedBox(height: 8),
 
             DropdownButtonFormField<String>(
               value: selectedProvider,
-              dropdownColor: Colors.grey[900],
-              style:
-                  const TextStyle(color: Colors.white),
-              decoration: _inputDecoration(),
+              dropdownColor: colorScheme.surface,
+              style: TextStyle(
+                color: colorScheme.onSurface,
+              ),
+              decoration: _inputDecoration(
+                  context: context),
               items: providers
                   .map((provider) =>
                       DropdownMenuItem(
@@ -82,13 +103,20 @@ class _ElectricityBillScreenState
 
             const SizedBox(height: 20),
 
-            const Text("Bill Amount",
-                style: TextStyle(
-                    color: Colors.white70)),
+            Text(
+              "Bill Amount",
+              style: theme.textTheme.labelLarge!
+                  .copyWith(
+                color: colorScheme.onSurface,
+              ),
+            ),
             const SizedBox(height: 8),
 
-            _inputField(amountController,
-                "Enter amount"),
+            _inputField(
+              controller: amountController,
+              hint: "Enter amount",
+              context: context,
+            ),
 
             const SizedBox(height: 40),
 
@@ -145,26 +173,42 @@ class _ElectricityBillScreenState
     );
   }
 
-  Widget _inputField(
-      TextEditingController controller,
-      String hint) {
+  Widget _inputField({
+    required TextEditingController controller,
+    required String hint,
+    required BuildContext context,
+  }) {
+    final colorScheme =
+        Theme.of(context).colorScheme;
+
     return TextField(
       controller: controller,
       keyboardType: TextInputType.number,
-      style:
-          const TextStyle(color: Colors.white),
-      decoration: _inputDecoration(hint),
+      style: TextStyle(
+        color: colorScheme.onSurface,
+      ),
+      decoration: _inputDecoration(
+        context: context,
+        hint: hint,
+      ),
     );
   }
 
-  InputDecoration _inputDecoration(
-      [String? hint]) {
+  InputDecoration _inputDecoration({
+    required BuildContext context,
+    String? hint,
+  }) {
+    final colorScheme =
+        Theme.of(context).colorScheme;
+
     return InputDecoration(
       hintText: hint,
-      hintStyle:
-          const TextStyle(color: Colors.white38),
+      hintStyle: TextStyle(
+        color: colorScheme.onSurfaceVariant,
+      ),
       filled: true,
-      fillColor: Colors.white12,
+      fillColor:
+          colorScheme.surfaceContainerHighest,
       border: OutlineInputBorder(
         borderRadius:
             BorderRadius.circular(12),

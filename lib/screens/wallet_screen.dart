@@ -29,23 +29,19 @@ class _WalletScreenState extends State<WalletScreen> {
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
-
-
       appBar: AppBar(
+        backgroundColor:  Colors.deepPurple,
         elevation: 0,
         title: const Text("Payzz"),
-        leading: Builder(
-          builder: (context) => IconButton(
-            icon: const Icon(Icons.menu),
-            onPressed: () {
-              Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => const AppDrawer(),
-        ),
-      );
-            },
-          ),
+        leading: IconButton(
+          icon: const Icon(Icons.menu),
+          onPressed: () {
+            Navigator.of(context).push(
+              AppRouter.slideleft(
+                const AppDrawer(),
+              ),
+            );
+          },
         ),
         actions: [
           IconButton(
@@ -96,7 +92,7 @@ class _WalletScreenState extends State<WalletScreen> {
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(25),
-                    decoration:  BoxDecoration(
+                    decoration: BoxDecoration(
                       gradient: const LinearGradient(
                         colors: [
                           Colors.deepPurple,
@@ -116,7 +112,10 @@ class _WalletScreenState extends State<WalletScreen> {
                           children: [
                             Text(
                               "Wallet Balance",
-                              style: theme.textTheme.labelLarge,
+                              style: TextStyle(
+                                color: Colors.white
+                              ),
+                              
                             ),
                             IconButton(
                               onPressed: () {
@@ -147,12 +146,12 @@ class _WalletScreenState extends State<WalletScreen> {
                               style: theme.textTheme.headlineMedium!
                                   .copyWith(
                                       fontWeight:
-                                          FontWeight.bold),
+                                          FontWeight.bold,
+                                          color: Colors.white),
                             ),
 
                             ElevatedButton.icon(
-                              icon: const Icon(Icons.add,
-                                  size: 18),
+                              icon: const Icon(Icons.add, size: 18),
                               label: const Text("Add"),
                               onPressed: () {
                                 Navigator.of(context)
@@ -229,21 +228,18 @@ class _WalletScreenState extends State<WalletScreen> {
 
                   const SizedBox(height: 40),
 
-                  /// BILL PAYMENTS TITLE
+                  /// BILL PAYMENTS
                   Text(
                     "Bill Payments",
                     style: TextStyle(
                       fontSize: 18,
-                      fontWeight:
-                          FontWeight.bold,
-                      color:
-                          theme.colorScheme.onSurface,
+                      fontWeight: FontWeight.bold,
+                      color: theme.colorScheme.onSurface,
                     ),
                   ),
 
                   const SizedBox(height: 20),
 
-                  /// BILL BUTTONS
                   Row(
                     mainAxisAlignment:
                         MainAxisAlignment.spaceBetween,
@@ -263,8 +259,7 @@ class _WalletScreenState extends State<WalletScreen> {
                       ),
                       _actionButton(
                         context,
-                        icon:
-                            Icons.electric_bolt,
+                        icon: Icons.electric_bolt,
                         label: "Electricity",
                         onTap: () {
                           Navigator.push(
@@ -293,8 +288,7 @@ class _WalletScreenState extends State<WalletScreen> {
                         icon: Icons.more_horiz,
                         label: "More",
                         onTap: () {
-                          _comingSoon(context,
-                              "More Services");
+                          _comingSoon(context, "More Services");
                         },
                       ),
                     ],
@@ -325,14 +319,12 @@ class _WalletScreenState extends State<WalletScreen> {
             child: Container(
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
-                color:
-                    theme.colorScheme.surfaceContainerHighest,
+                color: theme.colorScheme.surfaceContainerHighest,
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 icon,
-                color:
-                    theme.colorScheme.onSurface,
+                color: theme.colorScheme.onSurface,
               ),
             ),
           ),
@@ -350,8 +342,7 @@ class _WalletScreenState extends State<WalletScreen> {
     );
   }
 
-  void _comingSoon(
-      BuildContext context, String title) {
+  void _comingSoon(BuildContext context, String title) {
     ScaffoldMessenger.of(context)
         .showSnackBar(
       SnackBar(content: Text("$title Coming Soon")),
@@ -360,11 +351,9 @@ class _WalletScreenState extends State<WalletScreen> {
 
   Route _createRoute() {
     return PageRouteBuilder(
-      transitionDuration:
-          const Duration(milliseconds: 350),
-      pageBuilder:
-          (_, animation, _) =>
-              const AddMoneyScreen(),
+      transitionDuration: const Duration(milliseconds: 350),
+      pageBuilder: (_, animation, _) =>
+          const AddMoneyScreen(),
       transitionsBuilder:
           (_, animation, _, child) {
         return SlideTransition(

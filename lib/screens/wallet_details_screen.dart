@@ -13,6 +13,7 @@ class WalletDetailsScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
+        backgroundColor: Colors.deepPurple,
         title: const Text("My Wallet"),
         elevation: 0,
       ),

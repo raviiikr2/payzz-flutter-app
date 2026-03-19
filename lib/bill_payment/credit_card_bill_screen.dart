@@ -22,7 +22,7 @@ class _CreditCardBillScreenState
     return Scaffold(
       backgroundColor: const Color(0xFF121212),
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.deepPurple,
         title: const Text("Credit Card Bill",
             style: TextStyle(color: Colors.white)),
         leading: IconButton(

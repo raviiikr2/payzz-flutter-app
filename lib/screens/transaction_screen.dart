@@ -14,6 +14,7 @@ class TransactionScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
+        backgroundColor: Colors.deepPurple,
         elevation: 0,
         title: const Text("Transactions"),
       ),

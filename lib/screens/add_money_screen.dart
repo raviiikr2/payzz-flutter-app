@@ -135,10 +135,10 @@ class _AddMoneyScreenState extends State<AddMoneyScreen> {
     final colorScheme = theme.colorScheme;
 
     return Scaffold(
-      backgroundColor: colorScheme.background,
+      backgroundColor: colorScheme.surface,
       appBar: AppBar(
         title: const Text("Add Money"),
-        backgroundColor: colorScheme.background,
+        backgroundColor: colorScheme.surface,
         elevation: 0,
       ),
       body: SingleChildScrollView(

@@ -13,15 +13,41 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int selectedIndex = 0;
 
-  final List<Widget> pages = const [
-    WalletScreen(),
-    TransactionScreen(),
-  ];
+  final PageController _pageController = PageController();
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  void onTabTapped(int index) {
+    setState(() {
+      selectedIndex = index;
+    });
+
+    _pageController.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.ease,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: pages[selectedIndex],
+      body: PageView(
+        controller: _pageController,
+        onPageChanged: (index) {
+          setState(() {
+            selectedIndex = index;
+          });
+        },
+        children: const [
+          WalletScreen(),
+          TransactionScreen(),
+        ],
+      ),
 
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.deepPurple,
@@ -57,11 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ? Colors.deepPurple
                       : Colors.grey,
                 ),
-                onPressed: () {
-                  setState(() {
-                    selectedIndex = 0;
-                  });
-                },
+                onPressed: () => onTabTapped(0),
               ),
 
               const SizedBox(width: 40),
@@ -73,11 +95,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ? Colors.deepPurple
                       : Colors.grey,
                 ),
-                onPressed: () {
-                  setState(() {
-                    selectedIndex = 1;
-                  });
-                },
+                onPressed: () => onTabTapped(1),
               ),
             ],
           ),

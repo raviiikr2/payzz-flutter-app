@@ -5,41 +5,59 @@ class MobileRechargeScreen extends StatefulWidget {
   const MobileRechargeScreen({super.key});
 
   @override
-  State<MobileRechargeScreen> createState() => _MobileRechargeScreenState();
+  State<MobileRechargeScreen> createState() =>
+      _MobileRechargeScreenState();
 }
 
-class _MobileRechargeScreenState extends State<MobileRechargeScreen> {
+class _MobileRechargeScreenState
+    extends State<MobileRechargeScreen> {
   final phoneController = TextEditingController();
   final amountController = TextEditingController();
 
   String selectedOperator = "Jio";
 
-  final List<String> operators = ["Jio", "Airtel", "Vi", "BSNL"];
+  final List<String> operators = [
+    "Jio",
+    "Airtel",
+    "Vi",
+    "BSNL"
+  ];
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Scaffold(
-      backgroundColor: const Color(0xFF121212),
+      backgroundColor:
+          theme.scaffoldBackgroundColor,
+
+     
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.deepPurple,
         title: const Text(
           "Mobile Recharge",
           style: TextStyle(color: Colors.white),
         ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
+        leading: const BackButton(
+          color: Colors.white,
         ),
       ),
+
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment:
+              CrossAxisAlignment.start,
           children: [
+
             /// Phone Number
-            const Text(
+            Text(
               "Mobile Number",
-              style: TextStyle(color: Colors.white70, fontSize: 14),
+              style: theme.textTheme.labelLarge!
+                  .copyWith(
+                color: colorScheme.onSurface,
+              ),
             ),
             const SizedBox(height: 8),
 
@@ -47,43 +65,40 @@ class _MobileRechargeScreenState extends State<MobileRechargeScreen> {
               controller: phoneController,
               keyboardType: TextInputType.phone,
               maxLength: 10,
-              style: const TextStyle(color: Colors.white),
-              decoration: InputDecoration(
-                hintText: "Enter 10-digit number",
-                hintStyle: const TextStyle(color: Colors.white38),
-                filled: true,
-                fillColor: Colors.white12,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
-                ),
+              style: TextStyle(
+                color: colorScheme.onSurface,
+              ),
+              decoration: _inputDecoration(
+                context: context,
+                hint: "Enter 10-digit number",
               ),
             ),
 
             const SizedBox(height: 20),
 
             /// Operator
-            const Text(
+            Text(
               "Operator",
-              style: TextStyle(color: Colors.white70, fontSize: 14),
+              style: theme.textTheme.labelLarge!
+                  .copyWith(
+                color: colorScheme.onSurface,
+              ),
             ),
             const SizedBox(height: 8),
 
             DropdownButtonFormField<String>(
               initialValue: selectedOperator,
-              dropdownColor: Colors.grey[900],
-              style: const TextStyle(color: Colors.white),
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Colors.white12,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
-                ),
+              dropdownColor:
+                  colorScheme.surface,
+              style: TextStyle(
+                color: colorScheme.onSurface,
               ),
+              decoration:
+                  _inputDecoration(context: context),
               items: operators
                   .map(
-                    (operator) => DropdownMenuItem(
+                    (operator) =>
+                        DropdownMenuItem(
                       value: operator,
                       child: Text(operator),
                     ),
@@ -91,7 +106,8 @@ class _MobileRechargeScreenState extends State<MobileRechargeScreen> {
                   .toList(),
               onChanged: (value) {
                 setState(() {
-                  selectedOperator = value!;
+                  selectedOperator =
+                      value!;
                 });
               },
             ),
@@ -99,34 +115,37 @@ class _MobileRechargeScreenState extends State<MobileRechargeScreen> {
             const SizedBox(height: 20),
 
             /// Amount
-            const Text(
+            Text(
               "Recharge Amount",
-              style: TextStyle(color: Colors.white70, fontSize: 14),
+              style: theme.textTheme.labelLarge!
+                  .copyWith(
+                color: colorScheme.onSurface,
+              ),
             ),
             const SizedBox(height: 8),
 
             TextField(
               controller: amountController,
-              keyboardType: TextInputType.number,
-              style: const TextStyle(color: Colors.white),
-              decoration: InputDecoration(
-                hintText: "Enter amount",
-                hintStyle: const TextStyle(color: Colors.white38),
-                filled: true,
-                fillColor: Colors.white12,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
-                ),
+              keyboardType:
+                  TextInputType.number,
+              style: TextStyle(
+                color: colorScheme.onSurface,
+              ),
+              decoration: _inputDecoration(
+                context: context,
+                hint: "Enter amount",
               ),
             ),
 
             const SizedBox(height: 25),
 
-            /// Quick Amount Buttons
-            const Text(
+            /// Quick Recharge
+            Text(
               "Quick Recharge",
-              style: TextStyle(color: Colors.white70, fontSize: 14),
+              style: theme.textTheme.labelLarge!
+                  .copyWith(
+                color: colorScheme.onSurface,
+              ),
             ),
 
             const SizedBox(height: 15),
@@ -135,10 +154,10 @@ class _MobileRechargeScreenState extends State<MobileRechargeScreen> {
               spacing: 15,
               runSpacing: 15,
               children: [
-                _quickAmount(199),
-                _quickAmount(299),
-                _quickAmount(399),
-                _quickAmount(499),
+                _quickAmount(context, 199),
+                _quickAmount(context, 299),
+                _quickAmount(context, 399),
+                _quickAmount(context, 499),
               ],
             ),
 
@@ -148,21 +167,40 @@ class _MobileRechargeScreenState extends State<MobileRechargeScreen> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.deepPurple,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                style:
+                    ElevatedButton.styleFrom(
+                  backgroundColor:
+                      Colors.deepPurple,
+                  padding:
+                      const EdgeInsets
+                          .symmetric(
+                              vertical: 16),
+                  shape:
+                      RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.circular(
+                            12),
                   ),
                 ),
-
                 onPressed: () {
-                  final phone = phoneController.text.trim();
-                  final amount = double.tryParse(amountController.text.trim());
+                  final phone =
+                      phoneController.text
+                          .trim();
+                  final amount =
+                      double.tryParse(
+                          amountController
+                              .text
+                              .trim());
 
-                  if (phone.length != 10 || amount == null || amount <= 0) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Enter valid details")),
+                  if (phone.length != 10 ||
+                      amount == null ||
+                      amount <= 0) {
+                    ScaffoldMessenger.of(
+                            context)
+                        .showSnackBar(
+                      const SnackBar(
+                          content: Text(
+                              "Enter valid details")),
                     );
                     return;
                   }
@@ -171,13 +209,21 @@ class _MobileRechargeScreenState extends State<MobileRechargeScreen> {
                     context,
                     MaterialPageRoute(
                       builder: (_) =>
-                          BillStatusScreen(amount: amount, type: "Mobile Recharge")
+                          BillStatusScreen(
+                        amount: amount,
+                        type:
+                            "Mobile Recharge",
+                      ),
                     ),
                   );
                 },
                 child: const Text(
                   "Proceed to Recharge",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    color: Colors.white,
+                      fontSize: 16,
+                      fontWeight:
+                          FontWeight.bold),
                 ),
               ),
             ),
@@ -187,24 +233,59 @@ class _MobileRechargeScreenState extends State<MobileRechargeScreen> {
     );
   }
 
-  Widget _quickAmount(int amount) {
+  Widget _quickAmount(
+      BuildContext context, int amount) {
+    final colorScheme =
+        Theme.of(context).colorScheme;
+
     return GestureDetector(
       onTap: () {
-        amountController.text = amount.toString();
+        amountController.text =
+            amount.toString();
       },
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+        padding: const EdgeInsets.symmetric(
+            horizontal: 18,
+            vertical: 12),
         decoration: BoxDecoration(
-          color: Colors.white12,
-          borderRadius: BorderRadius.circular(10),
+          color: colorScheme
+              .surfaceContainerHighest,
+          borderRadius:
+              BorderRadius.circular(10),
         ),
         child: Text(
           "₹ $amount",
-          style: const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
+          style: TextStyle(
+            color:
+                colorScheme.onSurface,
+            fontWeight:
+                FontWeight.bold,
           ),
         ),
+      ),
+    );
+  }
+
+  InputDecoration _inputDecoration({
+    required BuildContext context,
+    String? hint,
+  }) {
+    final colorScheme =
+        Theme.of(context).colorScheme;
+
+    return InputDecoration(
+      hintText: hint,
+      hintStyle: TextStyle(
+        color:
+            colorScheme.onSurfaceVariant,
+      ),
+      filled: true,
+      fillColor:
+          colorScheme.surfaceContainerHighest,
+      border: OutlineInputBorder(
+        borderRadius:
+            BorderRadius.circular(12),
+        borderSide: BorderSide.none,
       ),
     );
   }
